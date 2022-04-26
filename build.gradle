@@ -18,7 +18,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 
-group 'org.example'
+group 'com.yoon.book'
 version '1.0-SNAPSHOT'
 sourceCompatibility = 11
 
@@ -27,6 +27,13 @@ repositories {
 }
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-web') // 그룹:이름:버전
+    implementation ('junit:junit:4.13.1')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('com.h2database:h2')
+
+    compileOnly('org.projectlombok:lombok')
+    annotationProcessor('org.projectlombok:lombok')
+
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
