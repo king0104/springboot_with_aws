@@ -2,6 +2,7 @@ package com.yoon.book.springboot.service.posts;
 
 import com.yoon.book.springboot.domain.posts.Posts;
 import com.yoon.book.springboot.domain.posts.PostsRepository;
+import com.yoon.book.springboot.web.dto.PostsListResponseDto;
 import com.yoon.book.springboot.web.dto.PostsResponseDto;
 import com.yoon.book.springboot.web.dto.PostsSaveRequestDto;
 import com.yoon.book.springboot.web.dto.PostsUpdateRequestDto;
@@ -9,17 +10,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class PostsService {
 
     private final PostsRepository postsRepository;
 
+    // 1. 등록
     @Transactional
     public Long save(PostsSaveRequestDto requestDto) {
         return postsRepository.save(requestDto.toEntity()).getId();
     }
 
+    // 3. 수정
     @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto) {
         // 1. 게시글 찾기 by id
@@ -36,7 +42,7 @@ public class PostsService {
         return id;
     }
 
-
+    // 2. 조회
     public PostsResponseDto findById(Long id) {
         // 1. 게시글 찾기 by id
         Posts entity = postsRepository.findById(id)
@@ -44,5 +50,23 @@ public class PostsService {
 
         // 2. 해당 게시글 리턴
         return new PostsResponseDto(entity);
+    }
+
+    // 4. 삭제
+    @Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        // 1. 해당 게시글 찾기
+        Posts posts = postsRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("해당 게시글이 없습니다. id="+ id));
+        
+        // 2. 해당 게시글 삭제
+        postsRepository.delete(posts);
     }
 }
