@@ -38,9 +38,16 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
     implementation('org.springframework.session:spring-session-jdbc')
 
+    // mariaDB 관련 의존선
+    implementation('org.mariadb.jdbc:mariadb-java-client')
+
     compileOnly('org.projectlombok:lombok')
     annotationProcessor('org.projectlombok:lombok')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.springframework.security:spring-security-test')
+}
+
+jar {
+    enabled = false
 }
