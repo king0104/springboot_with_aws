@@ -20,7 +20,7 @@ script: "./gradlew clean build"
 before_deploy:
   - zip -r springboot-with-aws *
   - mkdir -p deploy
-  - mv spingboot-with-aws.zip deploy/springboot-with-aws.zip
+  - mv springboot-with-aws.zip deploy/springboot-with-aws.zip
 
 deploy:
   - provider: s3
