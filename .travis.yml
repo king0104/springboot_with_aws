@@ -17,11 +17,13 @@ cache:
 
 script: "./gradlew clean build"
 
+### Travis CI에서 빌드해서 만든 jar 파일을 s3에 올리게 해주는 코드 ###
 before_deploy:
   - zip -r springboot-with-aws *
   - mkdir -p deploy
   - mv springboot-with-aws.zip deploy/springboot-with-aws.zip
 
+# 외부 서비스(s3 등)와 연동될 행위 설정
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
@@ -36,6 +38,19 @@ deploy:
       all_branches: true
 
 
+### CodeDeploy 배포 ###
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repos settings에 설정된 값
+    bucket: springboot-with-aws-build-yoon # s3 버킷
+    key: springboot-with-aws.zip # 빌드 파일 압축해서 전달
+    bundle_type: zip # 압축 확장자
+    application: springboot-with-aws # 웹 콘솔에서 등록한 CodeDelpoy 애플리케이션 이름
+    deployment_group: springboot-with-aws-group # 웹 콘솔에서 등록한 CodeDelpoy 배포 그룹 이름
+    region: ap-northeast-2
+    wait-until-deployed: true
+    on:
+      all_branches: true # master말고 다른 모든 브런치 허용
 
 
 # CI 실행 완료시 메일로 알람
